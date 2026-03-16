@@ -3,13 +3,12 @@ import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, up
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAFP8jTi8O_yXhLwHmQdXmQ4TjhtuZvER0",
-    authDomain: "soundofshine-11625.firebaseapp.com",
-    projectId: "soundofshine-11625",
-    storageBucket: "soundofshine-11625.firebasestorage.app",
-    messagingSenderId: "764740446334",
-    appId: "1:764740446334:web:c758cac0aa955bc490d02f",
-    measurementId: "G-L3X2HQTP9S"
+    apiKey: "AIzaSyCKWWiS-Lo6C-OX0lma1yYKE8N5QP6DQ48",
+    authDomain: "heenari-dd6a4.firebaseapp.com",
+    projectId: "heenari-dd6a4",
+    storageBucket: "heenari-dd6a4.firebasestorage.app",
+    messagingSenderId: "328809577165",
+    appId: "1:328809577165:web:a6a862fcff1003cb068784"
 };
 
 // Initialize Firebase
