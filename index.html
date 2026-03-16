@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>희나리 동아리방 예약 </title>
+    <link rel="stylesheet" href="styles.css?v=6">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                    <h1 data-i18n="app.title">희나리 동아리방 <span>예약</span></h1>
+                </div>
+                <div class="month-nav">
+                    <button id="prevMonth" class="icon-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 id="currentMonthYear">2026년 3월</h2>
+                    <button id="nextMonth" class="icon-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="header-actions">
+                    <div class="icon-group">
+                        <button id="langToggleBtn" class="icon-btn" title="언어 설정 / Language"><i class="fa-solid fa-globe"></i></button>
+                        <button id="themeSettingsBtn" class="icon-btn" title="테마 설정"><i class="fa-solid fa-palette"></i></button>
+                    </div>
+                    <button id="quickReserveBtn" class="primary-btn">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="app.reserveBtn">예약하기</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <main class="main-layout">
+            <!-- Top: Upcoming Summary Overview -->
+            <section class="upcoming-summary glass-card">
+                <div class="upcoming-header">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="main.upcomingTitle">다가오는 예약</span></h3>
+                </div>
+                <div id="upcomingList" class="upcoming-list">
+                    <!-- Cards injected via JS -->
+                    <div class="empty-upcoming" data-i18n="main.loading">불러오는 중...</div>
+                </div>
+            </section>
+
+            <!-- Bottom: Calendar and Details Row -->
+            <div class="calendar-row">
+                <!-- Left: Calendar View -->
+                <section class="calendar-section glass-card">
+                    <div class="weekdays">
+                        <div data-i18n="day.sun">일</div>
+                        <div data-i18n="day.mon">월</div>
+                        <div data-i18n="day.tue">화</div>
+                        <div data-i18n="day.wed">수</div>
+                        <div data-i18n="day.thu">목</div>
+                        <div data-i18n="day.fri">금</div>
+                        <div data-i18n="day.sat">토</div>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid">
+                        <!-- Calendar days will be injected via JS -->
+                    </div>
+                </section>
+
+                <!-- Right: Daily Schedule View -->
+                <section class="schedule-section glass-card">
+                    <div class="schedule-header">
+                        <h3 id="selectedDateTitle">3월 1일 (일)</h3>
+                        <span class="badge" data-i18n="main.scheduleBadge">예약 내역</span>
+                    </div>
+                    <div class="timeline-container">
+                        <div id="timelineGrid" class="timeline-grid">
+                            <!-- Timeline intervals will be injected via JS, e.g. 09:00 to 22:00 -->
+                        </div>
+                        <div id="reservationsList" class="reservations-list">
+                            <!-- Daily reservations will appear here -->
+                            <div class="empty-state">
+                                <i class="fa-regular fa-calendar-xmark"></i>
+                                <p data-i18n="main.noSchedule">이 날은 예약이 없습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p data-i18n="footer.ko">&copy; 2026. 모든 시스템에 대한 저작권 및 모든 권리는 경상국립대학교 중앙동아리 공연분과 '희나리'에게 있습니다. 무단수정 및 재배포 금지</p>
+            <p data-i18n="footer.en">All rights reserved by Gyeongsang National University Performance Division Central Club 'Heenari'.
+                Unauthorized modification and redistribution are strictly prohibited.</p>
+        </footer>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div id="reservationModal" class="modal-overlay hidden">
+        <div class="modal-container glass-card">
+            <div class="modal-header">
+                <h2 id="modalTitle" data-i18n="modal.newResTitle">새로운 예약</h2>
+                <button id="closeModalBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="reservationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="resDate" data-i18n="modal.labelDate">이용 날짜</label>
+                        <input type="date" id="resDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startTime" data-i18n="modal.labelStart">시작 시간</label>
+                        <select id="startTime" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime" data-i18n="modal.labelEnd">종료 시간</label>
+                        <select id="endTime" required></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="teamName" data-i18n="modal.labelTeam">팀명</label>
+                        <input type="text" id="teamName" data-i18n-placeholder="modal.phTeam" placeholder="예: 밴드팀" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userName" data-i18n="modal.labelName">예약자 이름</label>
+                        <input type="text" id="userName" data-i18n-placeholder="modal.phName" placeholder="홍길동" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peopleCount" data-i18n="modal.labelCount">사용 인원수</label>
+                        <input type="number" id="peopleCount" min="1" max="50" data-i18n-placeholder="modal.phCount" placeholder="예: 5" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="purpose" data-i18n="modal.labelPurpose">사용 목적</label>
+                    <select id="purpose" required>
+                        <option value="합주" data-i18n="modal.optEnsemble">🎸 합주</option>
+                        <option value="강습" data-i18n="modal.optClass">📚 강습</option>
+                        <option value="정기회의" data-i18n="modal.optMeeting">정기회의</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="cancelBtn" class="secondary-btn" data-i18n="modal.btnCancel">취소</button>
+                    <button type="submit" id="submitResBtn" class="primary-btn" data-i18n="modal.btnSubmit">예약 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>    <!-- Theme Selector Modal (Admin Only) -->
+    <div id="themeModal" class="modal-overlay hidden">
+        <div class="modal-container glass-card theme-modal-container">
+            <div class="modal-header">
+                <h2>🎨 <span data-i18n="theme.title">테마 설정</span></h2>
+                <button id="closeThemeModalBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="theme-options">
+                <button class="theme-btn" data-theme="pastel">
+                    <div class="theme-preview pastel-preview"></div>
+                    <span data-i18n="theme.pastel">파스텔 (기본)</span>
+                </button>
+                <button class="theme-btn" data-theme="modern">
+                    <div class="theme-preview modern-preview"></div>
+                    <span data-i18n="theme.modern">모던 (깔끔)</span>
+                </button>
+                <button class="theme-btn" data-theme="dark">
+                    <div class="theme-preview dark-preview"></div>
+                    <span data-i18n="theme.dark">다크 모드</span>
+                </button>
+                <button class="theme-btn" data-theme="ocean">
+                    <div class="theme-preview ocean-preview"></div>
+                    <span data-i18n="theme.ocean">오션 (바다)</span>
+                </button>
+                <button class="theme-btn" data-theme="sunset">
+                    <div class="theme-preview sunset-preview"></div>
+                    <span data-i18n="theme.sunset">선셋 (노을)</span>
+                </button>
+                <button class="theme-btn" data-theme="nature">
+                    <div class="theme-preview nature-preview"></div>
+                    <span data-i18n="theme.nature">네이처 (자연)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js?v=2"></script>
+</body>
+
+</html>
